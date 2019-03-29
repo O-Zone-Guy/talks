@@ -1,0 +1,228 @@
+#+TITLE: Emacs group presentation: snippets
+#+DESCRIPTION: A brief introduction to snippets in Emacs using yasnippets
+#+STARTUP: indent
+
+* Introduction
+
+This is a brief introduction to the concept of snippets in Agda.
+
+Packages used:
+1) [[https://github.com/joaotavora/yasnippet][yasnippets]]
+   - The primary focus of the talk.
+2) [[https://orgmode.org/][org-mode]]
+   - My preferred mode for writing in Emacs.
+3) [[https://github.com/Kungsgeten/yankpad][yankpad]]
+   - Allows you to organise your snippets in an org file.
+
+Although I only use yasnippets, it's likely that much of what is
+discussed here is possible using other tools such as [[https://www.emacswiki.org/emacs/SkeletonMode][skeleton]],
+org-tempo or [[https://www.emacswiki.org/emacs/AbbrevMode][abbrev-mode]].
+
+** The problem
+
+Regardless of your field of work, but especially in computing and software,
+you likely find yourself repeating a similar chunk of text frequently.
+
+For instance
+- document headers
+- LaTeX environment wrappers
+- branching structures in a programming language
+
+** Naive solutions
+
+For small chunks of text, each repetition may not be costly,
+but with frequent use it adds up quickly.
+
+For larger tasks, you might keep the pattern of text somewhere
+so that you can copy/paste it, possibly with some small modifications
+afterward.
+
+*While it saves time, this strategy breaks your workflow*.
+
+** A better solution
+
+The idea of copying and pasting is not wrong, it just requires too
+many steps.
+
+A better solution is /snippets/: chunks of text which can be inserted
+with a simple command or expanded from a keyword.
+
+There are many tools for snippets available in Emacs; we will look
+at yasnippets, which has several nice features as we will see.
+
+** A simple snippet
+
+#+begin_src snippet
+# name: latex-item
+# key: li
+# binding: C-c l i
+# --
+\item
+#+end_src
+
+With yasnippets, snippets are organised into different directories
+for each mode, and individual snippets are written in individual files
+which look like the above.
+
+(You can have several directories containing snippet directories,
+set in your emacs init file)
+
+For instance, the sample snippet above might be written in a file
+~tex-mode/item~ or ~latex-mode/item~.
+
+* About snippets
+** What goes in a snippet file?
+
+#+begin_src text
+# name: 
+# key: 
+# condition: 
+# group: 
+# expand-env: 
+# binding: 
+# type: 
+# uuid: 
+# contributor: 
+# --
+
+#+end_src
+
+The snippet text goes below the ~--~ line.
+
+Above the ~--~ are directives, all of which are optional.
+
+- ~name~: A name to be used for the snippet in menus.
+        Defaults to the name of the snippet file.
+- ~key~: An abbreviation which can then be expanded with
+       tab (or the setting of ~yas-expand~).
+- ~condition~: A piece of Emacs-lisp code which restricts
+             when a snippet can be expanded
+             (only the result of the code is non-~nil~).
+- ~group~: Allows for grouping of snippets in menus.
+- ~expand-env~: Allows you to set Emacs-lisp local variables
+              for the duration of the expansion of a snippet.
+- ~binding~: A direct keybinding for the snippet.
+- ~type~: Either ~snippet~ or ~command~.
+        The text of ~command~'s is interpreted as lisp code
+        rather than text when the snippet is invoked.
+- ~uuid~: A unique way to identify the snippet.
+        Loading another snippet with the same ~uuid~ would replace
+        the first snippet.
+- ~contributor~: has no effect; just for giving credit.
+
+** Don't want to write all your own snippets?
+
+I feel that the best way to use snippets (and Emacs in general)
+is to identify repetitive tasks and automate them yourself.
+
+But you may disagree! Or you may want a collection of snippets to
+start with.
+
+yasnippets does not come pre-equipped with snippets, but there is
+a [[https://github.com/AndreaCrotti/yasnippet-snippets][large library]] maintained by Andrea Crotti.
+
+** What about snippets for several modes?
+
+Wait! If snippets are organised into mode-specific directories,
+then you might need several copies of the same snippet for several modes.
+
+One solution is to place a snippet under the most general mode
+(e.g., ~text-mode~ instead of ~org-mode~).
+But this won't always be appropriate.
+
+yasnippets has a solution: a mode can inherit snippets from other
+modes by including a file ~.yasparents~ in the snippet with a list
+of modes to inherit from.
+
+The parent modes do not even need to be real modes;
+for instance, in both the ~c-mode~ and ~java-mode~ directories might
+inherit from a fictional ~cc-mode~ for C-like languages.
+(This is done in Andrea Crotti's library of snippets).
+
+* More complex snippets
+
+So just inserting text is a start, but we can do better.
+
+** Set the cursor position
+
+For instance, we might want to have the cursor
+in a specific position afterward.
+yasnippets allows this!
+
+#+begin_src text
+# name: latex-itemize
+# key: lei
+# binding: C-c l e i
+# --
+\begin{itemize}
+$0
+\end{itemize}
+#+end_src
+
+A ~$0~ indicates where the cursor should end after inserting a snippet.
+
+** Jump the cursor around: fields
+
+More importantly, we can indicate /several/ positions (fields)
+which can be tabbed through.
+
+Numbers which are repeated are /mirrored/ fields.
+
+#+begin_src text
+# name: latex-environment
+# key: leg
+# binding: C-c l e g
+# --
+\begin{$1}
+$0
+\end{$1}
+#+end_src
+
+** Mirroring/modifying fields
+
+Aside from just mirroring a field, we can modify the mirror images
+using Emacs-lisp code.
+
+#+begin_src text
+# name: dash-title
+# key: dasht
+# --
+${1:$(make-string (string-width yas-text) ?\-)}
+${1:Title}
+${1:$(make-string (string-width yas-text) ?\-)}
+$0
+#+end_src
+
+** Placeholder values for fields
+
+We can have suggestions/placeholders for the fields as well.
+
+#+begin_src text
+# name: level-parameterised-set
+# key: setl
+# --
+{${1:a} : Level} → (${2:A} : Set $1) → $0
+#+end_src
+
+** Run code
+
+yasnippets can execute arbitrary Emacs-lisp code surrounded
+in back-ticks.
+
+#+begin_src text
+# name: dad-joke
+# key: dj
+# --
+`(dad-joke)`
+#+end_src
+
+More seriously,
+
+#+begin_src text
+# name: this-file
+# key: thisfile
+# --
+`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`
+#+end_src
+
+03-29-19-emacs-snippets
