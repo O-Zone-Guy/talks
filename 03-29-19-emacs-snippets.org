@@ -2,9 +2,17 @@
 #+DESCRIPTION: A brief introduction to snippets in Emacs using yasnippets
 #+STARTUP: indent
 
+* COMMENT About this presentation
+
+This file was presented interactively,
+meaning I executed each snippet after showing it.
+
+So if you happen to use this file, you'll need to
+set up the snippets ahead of time.
+
 * Introduction
 
-This is a brief introduction to the concept of snippets in Agda.
+This is a brief introduction to the concept of snippets in Emacs.
 
 Packages used:
 1) [[https://github.com/joaotavora/yasnippet][yasnippets]]
@@ -216,6 +224,8 @@ in back-ticks.
 `(dad-joke)`
 #+end_src
 
+(This uses the package ~dad-joke~).
+
 More seriously,
 
 #+begin_src text
@@ -225,4 +235,3 @@ More seriously,
 `(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`
 #+end_src
 
-03-29-19-emacs-snippets
