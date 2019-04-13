@@ -1,0 +1,110 @@
+% fonts
+\newcommand{\txbf}{\textbf}
+\newcommand{\txit}{\textit}
+\newcommand{\txbi}{\textbi}
+\newcommand{\txtt}{\texttt}
+\newcommand{\txsf}{\textsf}
+
+% general shortcuts
+\newcommand{\fn}{\footnote}
+
+% parentheses/brackets/environments
+\newcommand{\braces}[1]{\{ #1 \}}
+\newcommand{\anglebr}[1]{\langle #1 \rangle}
+\newcommand{\llbr}{\llbracket}
+\newcommand{\rrbr}{\rrbracket}
+\newcommand{\llparen}{\llparenthesis}
+\newcommand{\rrparen}{\rrparenthesis}
+\newcommand{\dblbr}[1]{\llbr #1 \rrbr}
+\newcommand{\dblparen}[1]{\llparen #1 \rrparen}
+
+\newcommand{\set}[1]{\braces{#1}}
+\newcommand{\setcomp}[2]{\set{#1 \mid #2}}
+
+\newcommand{\tuple}[1]{\langle #1\tuplefirstarg}
+\newcommand{\tuplefirstarg}{\@ifnextchar\bgroup{\tuplenextarg}{\rangle}}
+\newcommand{\tuplenextarg}[1]{, #1\@ifnextchar\bgroup{\tuplenextarg}{\rangle}}
+
+% symbols
+\newcommand{\becomes}{\coloneqq}
+\newcommand{\halts}{\Downarrow}
+\newcommand{\converges}[2]{#1 \halts #2}
+\newcommand{\union}{\cup}
+\newcommand{\intersect}{\cap}
+\newcommand{\iterunion}[3]{\bigcup_{#1}^{#2} #3}
+\newcommand{\iterintersect}[3]{\bigcap_{#1}^{#2} #3}
+\newcommand{\setsubtract}{\backslash}
+\newcommand{\powerset}[1]{\mathcal{P}\ #1}
+\newcommand{\nequiv}{\not\equiv}
+\newcommand{\st}{\cdot} % ``such that''
+\newcommand{\placeholder}{\cdot}
+\newcommand{\emptyarg}{\cdot}
+
+% characters
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathcal{Z}}
+\newcommand{\BBB}{\mathcal{B}}
+\newcommand{\CCC}{\mathcal{C}}
+\newcommand{\FFF}{\mathcal{F}}
+\newcommand{\GGG}{\mathcal{G}}
+\newcommand{\MMM}{\mathcal{M}}
+\newcommand{\PPP}{\mathcal{P}}
+\newcommand{\RRR}{\mathcal{R}}
+\newcommand{\VVV}{\mathcal{V}}
+\newcommand{\ZZZ}{\mathcal{Z}}
+\newcommand{\Ga}{\alpha}
+\newcommand{\Gb}{\beta}
+\newcommand{\Gd}{\delta}
+\newcommand{\Ge}{\epsilon}
+\newcommand{\Gf}{\phi}
+\newcommand{\Gg}{\gamma}
+\newcommand{\GG}{\Gamma}
+\newcommand{\Gl}{\lambda}
+\newcommand{\Gps}{\psi}
+\newcommand{\Gs}{\sigma}
+\newcommand{\GS}{\Sigma}
+\newcommand{\Gt}{\tau}
+
+% Agda fonts
+\newcommand{\AgKW}{\AgdaKeyword}
+\newcommand{\AgNum}{\AgdaNumber}
+\newcommand{\AgPT}{\AgdaPrimitiveType}
+
+\newcommand{\AgFun}{\AgdaFunction}
+\newcommand{\AgArg}{\AgdaArgument}
+
+\newcommand{\AgDT}{\AgdaDatatype}
+\newcommand{\AgIC}{\AgdaInductiveConstructor}
+\newcommand{\AgCIC}{\AgdaCoinductiveConstructor}
+
+\newcommand{\AgMod}{\AgdaModule}
+\newcommand{\AgRec}{\AgdaRecord}
+\newcommand{\AgFld}{\AgdaField}
+
+% ------------------------------------------------------------------------------
+% 3mi3 specific shortcuts
+% ------------------------------------------------------------------------------
+
+% regular expressions and grammars 
+\newcommand{\reor}{\mid}
+\newcommand{\ntml}[1]{\langle \txsf{#1} \rangle}
+\newcommand{\tml}[1]{\txtt{#1}}
+\newcommand{\der}{\to\ }
+\newcommand{\gor}{\ \mid\ }
+
+% substitution/state variant
+\newcommand{\subst}[2]{[#2 := #1]}
+
+% semantic evaluation
+\newcommand{\eval}[2]{\llbracket #1 \rrbracket #2}
+
+% program/memory configuration
+\newcommand{\config}[2]{\llbracket #1 , #2 \rrbracket}
+
+% small-step semantic relation
+\newcommand{\reducesto}{\to}
+
+% big-step-semantic evaluation
+\newcommand{\evalsto}{\Downarrow}
