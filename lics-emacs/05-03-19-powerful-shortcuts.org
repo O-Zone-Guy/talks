@@ -1,0 +1,160 @@
+#+Title: Powerful shortcuts in Emacs: ~general~ and ~hydra~
+#+Author: Mark Armstrong
+#+Date: Friday May 3, 2019
+#+STARTUP: indent
+
+* COMMENT About this presentation
+
+...
+
+* Purpose
+
+Commonly, Emacs users end up defining numerous shortcuts,
+either because
+- they've identified a new task which
+  should be automated via shortcuts, or
+- they find an existing shortcut to be
+  inconvenient or difficult to remember.
+
+Unsuprisingly, then, there are numerous packages
+to assist with creating shortcuts
+or enhance shortcuts in some way.
+
+I want to discuss two such packages today.
+
+As an example usage, I'll be discussing
+shortcuts for movement within a buffer.
+
+I use prefixes making use of the ~Super~ key,
+which is the ~Command~ key in MacOS and the ~Windows~ key in Windows.
+Personally, I also bind ~Caps Lock~ to ~Super~.
+
+* ~general~: “More convenient key definitions in emacs”
+
+~general~ provides convenient methods for defining shortcuts.
+
+** The vanilla solution
+
+You can create keybindings in Emacs using
+~define-key~ or ~global-set-key~, as in
+
+#+begin_src emacs-lisp
+(define-key global-map (kbd "s-; a") 'beginning-of-visual-line)
+(global-set-key (kbd "s-; a") 'beginning-of-visual-line)
+#+end_src
+
+The problem is that writing several shortcuts this way is
+tedious and likely error prone due to mistakes while
+copying/pasting.
+
+** Organise your shortcuts using new defininers
+
+The purpose we'll be using ~general~ for is to organise
+shortcuts into categories based on their prefixes.
+
+We'll consider three prefixes, and so three categories:
+- ~s-;~, for commands regarding ~line~'s
+  (unfortunately ~s-l~ is bound by my OS to lock my machine),
+- ~s-p~, for commands regarding ~page~'s, and
+- ~s-b~, for commands regarding the whole ~buffer~.
+
+The way we can organise shortcuts using ~general~ is to
+define replacements for ~define-key~ or ~global-set-key~
+which /include these prefixes/.
+
+#+begin_src emacs-lisp
+(general-create-definer general-line-nav-define-key
+  :prefix "s-;"
+  :keymaps 'override)
+
+(general-create-definer general-page-nav-define-key
+  :prefix "s-p"
+  :keymaps 'override)
+
+(general-create-definer general-buffer-nav-define-key
+  :prefix "s-b"
+  :keymaps 'override)
+#+end_src
+
+(Setting ~keymaps~ to ~'override~ ensures no mode will
+override our new shortcuts with its own;
+probably we are safe using the ~Super~ key,
+but I like to be sure).
+
+** Create shortcuts with the new definers
+
+Once we have a definer, we can easily create several shortcuts
+using it.
+
+For instance, for lines, I would like to be able to
+- go to the beginning of the current line,
+- go to the end of the current line,
+- go to the previous line,
+- go to the next line, and
+- go to a specific line.
+
+#+begin_src emacs-lisp
+(general-line-nav-define-key
+  "a" 'beginning-of-visual-line
+  "e" 'end-of-visual-line
+  "p" 'previous-line
+  "n" 'next-line
+  "g" 'goto-line
+)
+#+end_src
+
+For pages, I would like to
+- scroll the page up,
+- scroll the page down, and
+- center the page on the current point.
+
+#+begin_src emacs-lisp
+(general-page-nav-define-key
+  "p" 'scroll-down-command
+  "n" 'scroll-up-command
+  "c" 'recenter-top-bottom
+)
+#+end_src
+
+For buffers, I want to
+- go to the top of the current buffer
+- go to the bottom of the current buffer
+- refresh the current buffer
+- see the undo tree using ~undo-tree~
+
+#+begin_src emacs-lisp
+(general-buffer-nav-define-key
+  "b" 'beginning-of-buffer
+  "e" 'end-of-buffer
+  "u" 'undo-tree-visualize
+  "r" 'revert-buffer
+)
+#+end_src
+
+* ~hydra~: “make Emacs bindings that stick around”
+
+~hydra~'s provide a convenient way to execute a shortcut
+(or several shortcuts) repeatedly.
+When one “head” is cut off (one shortcut executed),
+other “heads” (shortcuts) continue to pop up, until you retreat.
+
+** The vanilla solution
+
+Just repeat the shortcut over and over!
+
+Hopefully your shortcuts are short...
+
+** Defining a Hydra
+
+Let's define a single hydra, for navigating lines as we did before.
+
+#+begin_src emacs-lisp
+(defhydra hydra-line-move (global-map "s-k")
+  "Move lines"
+  ("a" beginning-of-visual-line "beginning")
+  ("e" end-of-visual-line "end")
+  ("n" next-line "next")
+  ("p" previous-line "previous")
+  ("g" goto-line "goto")
+)
+#+end_src
